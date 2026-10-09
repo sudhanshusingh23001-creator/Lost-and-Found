@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KhoyaPaaya</title>
+    <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Campus Lost & Found</h1>
+            <p class="subtitle"> A platform that reunites students with their belongings !</p>
+        </header>
+
+        <div class="stats_container">
+            <div class="stat_card lost">
+                <div class="stat_number" id="lost_count">0</div>
+                <div class="stat_label">Active Lost Items</div>
+            </div>
+            <div class="stat_card found">
+                <div class="stat_number" id="found_count">0</div>
+                <div class="stat_label">Active Found Items</div>
+            </div>
+            <div class="stat_card resolved">
+                <div class="stat_number" id="resolved_count">0</div>
+                <div class="stat_label">Cases Resolved</div>
+            </div>
+        </div>
+
+        <div class="action_buttons">
+            <button class="btn btn-primary" onclick="openReportForm('lost')">
+                🔴 I lost something !
+            </button>
+            <button class="btn btn-success" onclick="openReportForm('found')">
+                🟢 I found something !
+            </button>
+        </div>
+
+        <section class="filter_section">
+            <h2>Filters</h2>
+            <div class="filter_group">
+                <label for="type_filter">Type:</label>
+                <select id="type_filter" onchange="filterItems()">
+                    <option value="">All</option>
+                    <option value="lost">Lost</option>
+                    <option value="found">Found</option>
+                </select>
+            </div>
+            <div class="filter_group">
+                <label for="category_filter">Category:</label>
+                <select id="category_filter" onchange="filterItems()">
+                    <option value="">All Categories</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Books">Books</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="ID/Cards">ID/Cards</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="filter_group">
+                <label for="status_filter">Status:</label>
+                <select id="status_filter" onchange="filterItems()">
+                    <option value="">All Statuses</option>
+                    <option value="active">Active</option>
+                    <option value="claimed">Claimed</option>
+                    <option value="resolved">Resolved</option>
+                </select>
+            </div>
+            <div class="filter_group search_group">
+                <label for="search_box">Search:</label>
+                <input type="text" id="search_box" placeholder="Search items" onkeyup="filterItems()">
+            </div>
+        </section>
+
+        <section class="admin_lookup_section" id="admin_lookup_section">
+            <div class="admin_lookup_header">
+                <h2>🏢 Help desk details</h2>
+            </div>
+            <div class="admin_lookup_body">
+                <div class="admin_lookup_controls">
+                    <div class="filter_group">
+                        <label for="admin_block_select">Select Block:</label>
+                        <select id="admin_block_select">
+                            <option value=""> Choose a Block</option>
+                            <option value="CS/IT">CS/IT Block</option>
+                            <option value="Chanakya">Chanakya Block</option>
+                            <option value="KP Nautiyal">KP Nautiyal Block</option>
+                            <option value="BTech">B.Tech Block</option>
+                            <option value="Paramedical">Paramedical Block</option>
+                            <option value="Mechanical">Mechanical</option>
+                            </option>
+                        </select>
+                    </div>
+                    <button class="btn btn-admin" onclick="fetchAdminDetails()">
+                        🔍 Get Admin Details
+                    </button>
+                </div>
+                <div id="admin_result_card" class="admin_result_card" style="display: none;">
+                    <div class="admin_result_icon">📋</div>
+                    <h3 id="admin_result_title"></h3>
+                    <div class="admin_detail_row">
+                        <span class="admin_detail_icon">📍</span>
+                        <div>
+                            <div class="admin_detail_label">Office Location</div>
+                            <div class="admin_detail_value" id="admin_office"></div>
+                        </div>
+                    </div>
+                    <div class="admin_detail_row">
+                        <span class="admin_detail_icon">📞</span>
+                        <div>
+                            <div class="admin_detail_label">Contact Number</div>
+                            <div class="admin_detail_value" id="admin_contact"></div>
+                        </div>
+                    </div>
+                    <div class="admin_detail_row">
+                        <span class="admin_detail_icon">🕐</span>
+                        <div>
+                            <div class="admin_detail_label">Available Timings</div>
+                            <div class="admin_detail_value" id="admin_timings"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="items_section">
+            <h2>Items Listing</h2>
+            <div id="items_display" class="items_grid ">
+            </div>
+            <div id="no_items_msg" class="no_items">
+                <p>No items reported yet.</p>
+            </div>
+        </section>
+
+        <div id="report_modal" class="modal">
+            <div class="modal_content">
+                <span class="close" onclick="closeReportForm()">&times;</span>
+                <h2 id="modal_title">Report Item</h2>
+
+                <form id="lost_form" class="report-form-element" onsubmit="submitNewReport(event, 'lost')"
+                    style="display: none;">
+                    <div class="form_group">
+                        <label for="lost_reporter_name">Your Name *(required)</label>
+                        <input type="text" id="lost_reporter_name" name="reporter_name" required>
+                    </div>
+                    <div class="form_group">
+                        <label for="lost_reporter_contact">Contact (email/phone) *(required)</label>
+                        <input type="text" id="lost_reporter_contact" name="reporter_contact" required>
+                    </div>
+
+                    <div class="form_group">
+                        <label for="lost_item_name">Item Name *(required)</label>
+                        <input type="text" id="lost_item_name" name="item_name" required>
+                    </div>
+
+                    <div class="form_group">
+                        <label for="lost_item_category">Category</label>
+                        <select id="lost_item_category" name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Books">Books</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="ID/Cards">ID/Cards</option>
+                            <option value="Accessories">Accessories</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form_group">
+                        <label>Location *(required)</label>
+                        <div style="display: flex; gap: 10px;">
+                            <select name="block_location" required style="flex: 1;">
+                                <option value="">Select Block</option>
+                                <option value="CS/IT">CS/IT Block</option>
+                                <option value="Chanakya">Chanakya Block</option>
+                                <option value="KP Nautiyal">KP Nautiyal Block</option>
+                                <option value="BTech">B.Tech Block</option>
+                                <option value="Paramedical">Paramedical Block</option>
+                            </select>
+                            <input type="text" name="specific_location" placeholder="Room/LT/Lab No." required
+                                style="flex: 1;">
+                        </div>
+                    </div>
+
+                    <div class="form_group">
+                        <label>Date & Time Lost</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="date" name="item_date" required>
+                            <input type="time" name="item_time" required>
+                        </div>
+                    </div>
+
+                    <div class="form_group">
+                        <label for="lost_description">Description *(required)</label>
+                        <textarea id="lost_description" name="description" rows="3" placeholder="Describe the item"
+                            required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Report</button>
+                </form>
+
+                <form id="found_form" class="report-form-element" onsubmit="submitNewReport(event, 'found')"
+                    style="display: none;">
+                    <div class="form_group">
+                        <label for="found_reporter_name">Your Name *(required)</label>
+                        <input type="text" id="found_reporter_name" name="reporter_name" required>
+                    </div>
+                    <div class="form_group">
+                        <label for="found_reporter_contact">Contact (email/phone) *(required)</label>
+                        <input type="text" id="found_reporter_contact" name="reporter_contact" required>
+                    </div>
+
+                    <div class="form_group">
+                        <label for="found_item_name">Item Name *(required)</label>
+                        <input type="text" id="found_item_name" name="item_name" required>
+                    </div>
+
+                    <div class="form_group">
+                        <label for="found_item_category">Category</label>
+                        <select id="found_item_category" name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Books">Books</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="ID/Cards">ID/Cards</option>
+                            <option value="Accessories">Accessories</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form_group">
+                        <label>Location *(required)</label>
+                        <div style="display: flex; gap: 10px;">
+                            <select id="found_block_select" name="block_location" required style="flex: 1;">
+                                <option value="">Select Block</option>
+                                <option value="CS/IT">CS/IT Block</option>
+                                <option value="Chanakya">Chanakya Block</option>
+                                <option value="KP Nautiyal">KP Nautiyal Block</option>
+                                <option value="BTech">B.Tech Block</option>
+                                <option value="Paramedical">Paramedical Block</option>
+                            </select>
+                            <input type="text" name="specific_location" placeholder="Room/LT/Lab No." required
+                                style="flex: 1;">
+                        </div>
+                    </div>
+
+
+                    <div class="form_group">
+                        <label>Date & Time Found</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="date" name="item_date" required>
+                            <input type="time" name="item_time" required>
+                        </div>
+                    </div>
+
+                    <div class="form_group">
+                        <label for="found_description">Description *(required)</label>
+                        <textarea id="found_description" name="description" rows="3" placeholder="Describe the item"
+                            required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">Submit Report</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="details_modal" class="modal">
+            <div class="modal_content">
+                <span class="close" onclick="closeDetails()">&times;</span>
+                <div id="item_details_content">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; KhoyaPaaya - Campus Lost & Found System | Made by students, for students 🤝</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
